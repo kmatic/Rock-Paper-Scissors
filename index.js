@@ -1,3 +1,7 @@
+let playerWins = 0;
+let computerWins = 0;
+const buttons = document.querySelectorAll("button");
+
 function computerPlay() {
     let rand = Math.floor(Math.random() * 3) + 1;
     if (rand === 1) {
@@ -9,63 +13,76 @@ function computerPlay() {
     }
 }
 
-function playRound(playerSelection, computerSelection) {
+function disableButtons() {
+    buttons.forEach(button => {
+        button.disabled = true;
+    })
+}
+
+function playRound(playerSelection) {
+    let computerSelection = computerPlay();
     let playerMove = playerSelection.toLowerCase();
+    let scoreText = "";
+    const scores = document.querySelector("#scores");
+    const container = document.querySelector("#container");
+    const moves = document.createElement("div");
+    const final = document.createElement("div");
     if (playerMove === "rock") {
         if (computerSelection === "Paper") {
-            console.log("You lose! Paper beats Rock");
-            return "L";
+            computerWins++;
+            scoreText = "Player: " + playerWins + " Computer: " + computerWins
+            moveText = "You lose! Paper beats Rock";
         } else if (computerSelection === "Scissors") {
-            console.log("You win! Rock beats Scissors"); 
-            return "W";
+            playerWins++;
+            scoreText = "Player: " + playerWins + " Computer: " + computerWins
+            moveText = "You win! Rock beats Scissors";
         } else {
-            console.log("Tie!");
-            return "T";
+            scoreText = "Player: " + playerWins + " Computer: " + computerWins
+            moveText = "Tie!";
         }
     } else if (playerMove === "paper") {
         if (computerSelection === "Rock") {
-            console.log("You win! Paper beats Rock");
-            return "W";
+            playerWins++;
+            scoreText = "Player: " + playerWins + " Computer: " + computerWins
+            moveText = "You win! Paper beats Rock";
         } else if (computerSelection === "Scissors") {
-            console.log("You lose! Scissors beats Paper");
-            return "L";
+            computerWins++;
+            scoreText = "Player: " + playerWins + " Computer: " + computerWins
+            moveText = "You lose! Scissors beats Paper";
         } else {
-            console.log("Tie!");
-            return "T";
+            scoreText = "Player: " + playerWins + " Computer: " + computerWins
+            moveText = "Tie!";
         }
     } else {
         if (computerSelection === "Rock") {
-            console.log("You lose! Rock beats Scissors");
-            return "L";
-        } else if (computerSelection === "Paper") {
-            console.log("You win! Scissors beats Paper");
-            return "W";
-        } else {
-            console.log("Tie!");
-            return "T";
-        }
-    }
-}
-
-function game() {
-    let playerWins = 0;
-    let computerWins = 0;
-    for (let i = 0; i < 5; i++) {
-        let playerSelection = prompt("Rock, Paper, or Scissors?", "Rock")
-        let result = playRound(playerSelection, computerPlay());
-        if (result === "W") {
-            playerWins++;
-        } else if (result === "L") {
             computerWins++;
+            scoreText = "Player: " + playerWins + " Computer: " + computerWins
+            moveText = "You lose! Rock beats Scissors";
+        } else if (computerSelection === "Paper") {
+            playerWins++;
+            scoreText = "Player: " + playerWins + " Computer: " + computerWins
+            moveText = "You win! Scissors beats Paper";
+        } else {
+            scoreText = "Player: " + playerWins + " Computer: " + computerWins
+            moveText = "Tie!";
         }
     }
-    if (playerWins > computerWins) {
-        console.log("The player wins!");
-    } else if (computerWins > playerWins) {
-        console.log("The computer wins!");
-    } else {
-        console.log("It's a tie!");
+    if (playerWins == 5) {
+        final.textContent = "THE PLAYER HAS WON THE GAME! Reload to play again";
+        disableButtons();
     }
+    else if (computerWins == 5) {
+        final.textContent = "THE COMPUTER HAS WON THE GAME! Reload to play again";
+        disableButtons();
+    }
+    scores.textContent = scoreText;
+    moves.textContent = moveText;
+    container.appendChild(moves);
+    container.appendChild(final);
 }
 
-game();
+buttons.forEach(button => {
+    button.addEventListener("click", () => {
+        playRound(button.id);
+    });
+});
